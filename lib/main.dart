@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
+import 'homepage.dart';
 
-void main() => runApp(PennyWorthApp());
+void main() {
+  runApp(const PennyworthApp());
+}
 
-class PennyWorthApp extends StatelessWidget {
+class PennyworthApp extends StatelessWidget {
+  const PennyworthApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'PennyWorth',
+      title: 'Pennyworth',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blueGrey,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('PennyWorth Dashboard'),
-      ),
-      body: Center(
-        child: Text('Welcome to PennyWorth!'),
-      ),
     );
   }
 }
