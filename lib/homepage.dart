@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey[900],
             elevation: 4.0,
             margin: EdgeInsets.all(8.0),
-            child: Padding(
+            child: const Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: <Widget>[
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           // Transactions List
           Expanded(
             child: transactions.isEmpty
-                ? Center(
+                ? const Center(
                     child: Text(
                       'No transactions yet.',
                       style: TextStyle(color: Colors.white),
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                       var transaction = transactions[index];
                       // Replace with your transaction item UI
                       return ListTile(
-                        leading: Icon(Icons.account_balance_wallet,
+                        leading: const Icon(Icons.account_balance_wallet,
                             color: Colors.white),
                         title: Text(
                           transaction['name'],
