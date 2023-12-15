@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
 
 class GoogleSheetsApi {
@@ -22,4 +23,40 @@ class GoogleSheetsApi {
   static final _spreadsheetId = '1WvT7q6gwVUsi4LIQmrIvV3IAlpsMP9uMwoTpb_3fknQ';
   static final _gsheets = GSheets(_credentials);
   static Worksheet? _worksheet;
+
+  //varibles
+  static int numOfTrans = 0;
+  static List<List<dynamic>> currentTrans = [];
+  static bool loading = true;
+
+  Future init() async {
+    final ss = await _gsheets.spreadsheet(_spreadsheetId);
+    _worksheet = ss.worksheetByTitle('Worksheet1');
+    countRows();
+  }
+
+  static Future countRows() async {
+    while ((await _worksheet!.values.value(column: 1, row: numOfTrans + 1)) !=
+        '') {
+      numOfTrans++;
+    }
+    loadTransactions();
+  }
+
+  static Future loadTransactions() async {
+    if (_worksheet == null) return;
+
+    for (int i = 1; i < numOfTrans; i++) {
+      final String transName =
+          await _worksheet!.values.value(column: 1, row: i + 1);
+      final String amount =
+          await _worksheet!.values.value(column: 2, row: i + 1);
+
+      if (currentTrans.length < numOfTrans) {
+        currentTrans.add([transName, amount]);
+      }
+    }
+
+    loading = false;
+  }
 }

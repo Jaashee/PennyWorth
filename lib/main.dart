@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pennyworth/gsheets_api.dart';
 import 'homepage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  GoogleSheetsApi().init();
   runApp(const PennyworthApp());
 }
 
