@@ -1,3 +1,4 @@
 {
-  "cmake.sourceDirectory": "C:/Users/jasha/VSCode/pennyworth/linux"
+  "cmake.sourceDirectory": "C:/Users/jasha/VSCode/pennyworth/linux",
+  "C_Cpp.errorSquiggles": "enabled"
 }
