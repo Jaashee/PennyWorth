@@ -58,4 +58,11 @@ class GoogleSheetsApi {
 
     loading = false;
   }
+
+  static Future insert(String name, String amount) async {
+    if (_worksheet == null) return;
+    numOfTrans++;
+    currentTrans.add([name, amount]);
+    await _worksheet!.values.appendRow([name, amount]);
+  }
 }
