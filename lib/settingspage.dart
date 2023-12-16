@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'navbar.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -30,8 +32,9 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const NavBar(selectedIndex: 4),
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Your Name',
                 border: OutlineInputBorder(),
               ),
@@ -47,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 _saveUserName(value);
                 // Use a snackbar to show confirmation
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('Name updated successfully!'),
                   ),
                 );
@@ -58,12 +61,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 _saveUserName(_nameController.text);
                 // Use a snackbar to show confirmation
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('Name updated successfully!'),
                   ),
                 );
               },
-              child: Text('Save Name'),
+              child: const Text('Save Name'),
             ),
             // ...add other settings options here
           ],

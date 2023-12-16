@@ -10,6 +10,3 @@ class TransactionsPage extends StatelessWidget {
     );
   }
 }
-
-
-

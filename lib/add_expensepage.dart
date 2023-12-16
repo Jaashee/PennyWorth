@@ -1,6 +1,8 @@
 // add_expense_page.dart
 import 'package:flutter/material.dart';
 
+import 'navbar.dart';
+
 class AddExpensePage extends StatefulWidget {
   const AddExpensePage({super.key});
 
@@ -15,6 +17,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const NavBar(selectedIndex: 2),
       body: Card(
         color: const Color.fromARGB(255, 50, 50, 50),
         elevation: 4.0,

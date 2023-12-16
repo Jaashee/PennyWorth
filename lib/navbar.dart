@@ -8,15 +8,26 @@ import 'budgetpage.dart';
 import 'settingspage.dart';
 
 class NavBar extends StatefulWidget {
-  const NavBar({super.key});
+  final int selectedIndex;
+
+  const NavBar({
+    Key? key,
+    this.selectedIndex = 0,
+  }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _NavBarState createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
-  int _selectedIndex = 0; // Keep track of the selected index
+  late int _selectedIndex; // Will be initialized in initState
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex =
+        widget.selectedIndex; // Use the initial index provided by the widget
+  }
 
   // List of page widgets to navigate to
   final List<Widget> _pages = [
