@@ -31,11 +31,11 @@ class _NavBarState extends State<NavBar> {
 
   // List of page widgets to navigate to
   final List<Widget> _pages = [
-    HomePage(), // index 0
+    const HomePage(), // index 0
     TransactionsPage(), // index 1
-    AddExpensePage(), // index 2
+    const AddExpensePage(), // index 2
     BudgetPage(), // index 3
-    SettingsPage(), // index 4
+    const SettingsPage(), // index 4
   ];
 
   void _navigateTo(int index) {
