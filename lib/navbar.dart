@@ -16,6 +16,7 @@ class NavBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _NavBarState createState() => _NavBarState();
 }
 
@@ -58,9 +59,9 @@ class _NavBarState extends State<NavBar> {
 
     return CurvedNavigationBar(
       backgroundColor: Colors.transparent,
-      buttonBackgroundColor: Colors.blueAccent,
+      buttonBackgroundColor: const Color.fromARGB(255, 5, 140, 200),
       color: const Color.fromARGB(255, 50, 50, 50),
-      height: 60,
+      height: 70,
       items: items,
       index: _selectedIndex,
       onTap: (index) {

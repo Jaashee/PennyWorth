@@ -27,15 +27,17 @@ class _AddExpensePageState extends State<AddExpensePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const NavBar(selectedIndex: 2),
       body: Column(
         children: [
           Card(
             color: const Color.fromARGB(255, 50, 50, 50),
             elevation: 4.0,
-            margin: EdgeInsets.only(top: 80, left: 8, right: 8, bottom: 8),
+            margin:
+                const EdgeInsets.only(top: 80, left: 8, right: 8, bottom: 8),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child: SizedBox(
                 height: 200,
                 child: Center(
                   child: Column(
@@ -44,7 +46,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         'A D D  E X P E N S E',
                         style: TextStyle(color: Colors.grey[500], fontSize: 16),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 25,
                       ),
                       Row(
@@ -53,7 +55,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                             child: Form(
                               key: _formKey,
                               child: TextFormField(
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText: 'Amount?',
                                 ),
@@ -69,14 +71,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           ),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: TextField(
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'What is the Expense for?',
                               ),
@@ -95,7 +97,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
             alignment: Alignment.center,
             child: MaterialButton(
               color: const Color.fromARGB(255, 50, 50, 50),
-              child: Text(
+              child: const Text(
                 'Add Expense',
                 style: TextStyle(),
               ),
@@ -108,11 +110,11 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Sucessful!'),
-                          content: Text('Expense has been added'),
+                          title: const Text('Sucessful!'),
+                          content: const Text('Expense has been added'),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('Close'),
+                              child: const Text('Close'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },

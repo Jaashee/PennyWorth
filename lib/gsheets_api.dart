@@ -65,4 +65,10 @@ class GoogleSheetsApi {
     currentTrans.add([name, amount]);
     await _worksheet!.values.appendRow([name, amount]);
   }
+
+  static Future<void> deleteTransaction(int index) async {
+    // Adjust the row number as needed based on your sheet's structure
+    final rowNum = index + 2; // Assuming there is a header row
+    await _worksheet!.deleteRow(rowNum);
+  }
 }
