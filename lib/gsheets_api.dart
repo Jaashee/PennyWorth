@@ -86,7 +86,13 @@ class GoogleSheetsApi {
   static Future<void> resetBudget() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('monthlyBudget');
-    currentTrans
-        .clear();
+    currentTrans.clear();
+  }
+
+  static Future<List<double>> getTransactionAmounts() async {
+    // Assuming each transaction is a list, and the amount is the second item
+    return currentTrans.map((transaction) {
+      return double.tryParse(transaction[1]) ?? 0.0;
+    }).toList();
   }
 }

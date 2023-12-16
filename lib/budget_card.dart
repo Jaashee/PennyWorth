@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'gsheets_api.dart';
+
 class BudgetCard extends StatefulWidget {
   const BudgetCard({Key? key}) : super(key: key);
 
@@ -21,10 +23,16 @@ class _BudgetCardState extends State<BudgetCard> {
   Future<void> _loadBudgetData() async {
     final prefs = await SharedPreferences.getInstance();
     final budget = prefs.getDouble('monthlyBudget') ?? 0.0;
+
+    // Fetch the transaction amounts
+    final transactionAmounts = await GoogleSheetsApi.getTransactionAmounts();
+    // Calculate the total spent by summing the negative amounts (expenses)
+    final spent = transactionAmounts.fold(
+        0.0, (sum, amount) => sum + (amount < 0 ? amount : 0));
+
     setState(() {
       _monthlyBudget = budget;
-      // Here you would calculate the current spent based on transactions
-      _currentSpent = 0.0; // Replace with actual calculation
+      _currentSpent = spent.abs();
     });
   }
 
@@ -34,21 +42,21 @@ class _BudgetCardState extends State<BudgetCard> {
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Color.fromARGB(255, 50, 50, 50), // Assuming a dark theme
+        color: Colors.grey[900], // Assuming a dark theme
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
             spreadRadius: 1,
             blurRadius: 2,
-            offset: Offset(0, 2), // changes position of shadow
+            offset: const Offset(0, 2), // changes position of shadow
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Monthly Budget',
             style: TextStyle(
               fontSize: 24,
@@ -56,27 +64,27 @@ class _BudgetCardState extends State<BudgetCard> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             'Set Budget: \$${_monthlyBudget.toStringAsFixed(2)}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Current Spent: \$${_currentSpent.toStringAsFixed(2)}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               color: Colors.redAccent,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           LinearProgressIndicator(
             value: _currentSpent / (_monthlyBudget > 0 ? _monthlyBudget : 1),
             backgroundColor: Colors.white.withOpacity(0.3),
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent),
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.greenAccent),
           ),
         ],
       ),
