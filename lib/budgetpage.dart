@@ -1,134 +1,112 @@
-// budget_page.dart
 import 'package:flutter/material.dart';
-import 'package:pennyworth/gsheets_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'navbar.dart';
 
 class BudgetPage extends StatefulWidget {
-  const BudgetPage({super.key});
+  const BudgetPage({Key? key}) : super(key: key);
 
   @override
-  State<BudgetPage> createState() => _BudgetPageState();
+  // ignore: library_private_types_in_public_api
+  _BudgetPageState createState() => _BudgetPageState();
 }
 
 class _BudgetPageState extends State<BudgetPage> {
-  String monthlyBalance = '';
-  String totalExpenses = '';
-  String remainingBudget = '';
+  final TextEditingController _budgetController = TextEditingController();
 
-  final _textMthAmount = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  Future<void> _saveBudget() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_budgetController.text.isNotEmpty) {
+      final budget = double.tryParse(_budgetController.text);
+      if (budget != null) {
+        await prefs.setDouble('monthlyBudget', budget);
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Monthly budget set to \$${budget.toStringAsFixed(2)}')),
+        );
+      }
+    }
+  }
+
+  Future<void> _resetBudget() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('monthlyBudget');
+    _budgetController.clear();
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Budget has been reset')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Card(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            elevation: 4.0,
-            margin: EdgeInsets.only(top: 80, left: 8, right: 8, bottom: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 225,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        'M O N T H L Y  B U D G E T',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                      ),
-                      SizedBox(
-                        height: 35,
-                      ),
-                      Center(
-                        child: Text(
-                          '\$' + monthlyBalance,
-                          style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        'Total Expenses: ',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                      ),
-                      Text(
-                        'Budget Remaining: ',
-                        style: TextStyle(color: Colors.grey[500], fontSize: 16),
-                      ),
-                    ],
+      bottomNavigationBar: const NavBar(selectedIndex: 3),
+      appBar: AppBar(
+        title: const Text('Set Monthly Budget'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Monthly Budget',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _budgetController,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                hintText: 'Enter your budget',
+                filled: true,
+                fillColor: const Color.fromARGB(255, 92, 92, 92),
+                hintStyle:
+                    const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                border: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary:
+                        const Color.fromARGB(255, 92, 92, 92), // Button color
+                    onPrimary: Colors.white, // Text color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
+                  onPressed: _saveBudget,
+                  child: const Text('Set Budget'),
                 ),
-              ),
-            ),
-          ),
-          Card(
-            color: const Color.fromARGB(255, 50, 50, 50),
-            elevation: 4.0,
-            margin: EdgeInsets.only(top: 40, left: 8, right: 8, bottom: 8),
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: Container(
-                height: 150,
-                child: Column(
-                  children: [
-                    Text(
-                      'Set Monthly Budget',
-                      style: TextStyle(color: Colors.grey[500], fontSize: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // Red color for the reset action
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Expanded(
-                      child: Form(
-                        key: _formKey,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Amount?',
-                          ),
-                          validator: (text) {
-                            if (text == null || text.isEmpty) {
-                              return 'Enter an Amount';
-                            }
-                            return null;
-                          },
-                          controller: _textMthAmount,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: MaterialButton(
-                        color: const Color.fromARGB(255, 50, 50, 50),
-                        child: monthlyBalance == ''
-                            ? Text('Set Amount')
-                            : Text('Update Amount'),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            monthlyBalance = _textMthAmount.text;
-                            _textMthAmount.text = '';
-                            setState(() {});
-                          }
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
+                  onPressed: _resetBudget,
+                  child: const Text('Reset Budget'),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

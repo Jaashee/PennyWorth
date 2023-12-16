@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pennyworth/budget_card.dart';
 import 'package:pennyworth/gsheets_api.dart';
 import 'package:pennyworth/loading_circle.dart';
 import 'package:pennyworth/navbar.dart';
 import 'package:pennyworth/title_card.dart';
 import 'package:pennyworth/transaction_card.dart';
+import 'budget_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -34,15 +34,13 @@ class _HomePageState extends State<HomePage> {
       startLoading();
     }
     return Scaffold(
-      bottomNavigationBar: const NavBar(),
+      bottomNavigationBar: const NavBar(selectedIndex: 0),
       body: SafeArea(
         // Wrap your layout with SafeArea
         child: Column(
           children: [
             const TitleCard(),
-            const BudgetCard(
-              balance: '\$ 10000',
-            ),
+            const BudgetCard(),
             Expanded(
               child: GoogleSheetsApi.loading == true
                   ? const LoadingCircle()
@@ -62,21 +60,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// int _selectedIndex = 0;
-// // Placeholder for transactions list, start with an empty list
-// List<Map<String, dynamic>> transactions = [];
-
-// // Function to add a new transaction
-// void addTransaction(Map<String, dynamic> newTransaction) {
-//   setState(() {
-//     transactions.add(newTransaction);
-//   });
-//   // Here you would also update the Google Sheets data
-// }
-
-// void _onItemTapped(int index) {
-//   setState(() {
-//     _selectedIndex = index;
-//   });
-// }

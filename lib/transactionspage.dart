@@ -6,6 +6,7 @@ class TransactionsPage extends StatefulWidget {
   const TransactionsPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _TransactionsPageState createState() => _TransactionsPageState();
 }
 

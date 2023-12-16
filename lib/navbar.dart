@@ -33,9 +33,9 @@ class _NavBarState extends State<NavBar> {
   // List of page widgets to navigate to
   final List<Widget> _pages = [
     const HomePage(), // index 0
-    TransactionsPage(), // index 1
+    const TransactionsPage(), // index 1
     const AddExpensePage(), // index 2
-    BudgetPage(), // index 3
+    const BudgetPage(), // index 3
     const SettingsPage(), // index 4
   ];
 

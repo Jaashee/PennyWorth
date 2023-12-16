@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:gsheets/gsheets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoogleSheetsApi {
   //Create credtials for gsheet api
@@ -72,5 +71,22 @@ class GoogleSheetsApi {
     // Adjust the row number as needed based on your sheet's structure
     final rowNum = index + 2; // Assuming there is a header row
     await _worksheet!.deleteRow(rowNum);
+  }
+
+  static Future<void> saveMonthlyBudget(double budget) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('monthlyBudget', budget);
+  }
+
+  static Future<double> getMonthlyBudget() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble('monthlyBudget') ?? 0.0;
+  }
+
+  static Future<void> resetBudget() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('monthlyBudget');
+    currentTrans
+        .clear();
   }
 }
