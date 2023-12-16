@@ -6,9 +6,9 @@ class TitleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[900],
+      color: Color.fromARGB(255, 50, 50, 50),
       elevation: 4.0,
-      margin: EdgeInsets.only(top: 50, left: 8, right: 8, bottom: 8),
+      margin: EdgeInsets.only(top: 40, left: 8, right: 8, bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(

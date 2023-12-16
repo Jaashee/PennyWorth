@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   bool timerHasStarted = false;
   void startLoading() {
     timerHasStarted = true;
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       if (GoogleSheetsApi.loading == false) {
         setState(() {});
         timer.cancel();
@@ -32,39 +33,32 @@ class _HomePageState extends State<HomePage> {
     if (GoogleSheetsApi.loading == true && timerHasStarted == false) {
       startLoading();
     }
-
     return Scaffold(
-      body: Column(children: [
-        TitleCard(),
-        BudgetCard(
-          balance: '\$ 10000',
-        ),
-        Expanded(
-            child: Container(
-          child: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: GoogleSheetsApi.loading == true
-                      ? const LoadingCircle()
-                      : ListView.builder(
-                          itemCount: GoogleSheetsApi.currentTrans.length,
-                          itemBuilder: (context, index) {
-                            return TransactionCard(
-                                transName: GoogleSheetsApi.currentTrans[index]
-                                    [0],
-                                amount: GoogleSheetsApi.currentTrans[index][1]);
-                          }),
-                ),
-              ],
+      bottomNavigationBar: const NavBar(),
+      body: SafeArea(
+        // Wrap your layout with SafeArea
+        child: Column(
+          children: [
+            const TitleCard(),
+            BudgetCard(
+              balance: '\$ 10000',
             ),
-          ),
-        )),
-        NavBar(),
-      ]),
+            Expanded(
+              child: GoogleSheetsApi.loading == true
+                  ? const LoadingCircle()
+                  : ListView.builder(
+                      itemCount: GoogleSheetsApi.currentTrans.length,
+                      itemBuilder: (context, index) {
+                        return TransactionCard(
+                          transName: GoogleSheetsApi.currentTrans[index][0],
+                          amount: GoogleSheetsApi.currentTrans[index][1],
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ), // Your custom bottom navigation bar
     );
   }
 }

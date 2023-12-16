@@ -1,39 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-class NavBar extends StatelessWidget {
+import 'homepage.dart'; // Import your page widgets
+import 'transactionspage.dart';
+import 'add_expensepage.dart';
+import 'budgetpage.dart';
+import 'settingspage.dart';
+
+class NavBar extends StatefulWidget {
   const NavBar({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
+  _NavBarState createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
+  int _selectedIndex = 0; // Keep track of the selected index
+
+  // List of page widgets to navigate to
+  final List<Widget> _pages = [
+    const HomePage(),
+    TransactionsPage(),
+    AddExpensePage(),
+    BudgetPage(),
+    SettingsPage(),
+  ];
+
+  void _navigateTo(int index) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _pages[index],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.black, // Set your dark theme color here
-      selectedItemColor: Colors.blueAccent,
-      unselectedItemColor: Colors.grey,
-      // currentIndex: _selectedIndex,
-      // onTap: _onItemTapped,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: 'Transactions',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.add),
-          label: 'Add',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.pie_chart),
-          label: 'Budget',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Settings',
-        ),
-      ],
+    final items = <Widget>[
+      const Icon(Icons.home, size: 30),
+      const Icon(Icons.list, size: 30),
+      const Icon(Icons.add, size: 30),
+      const Icon(Icons.pie_chart, size: 30),
+      const Icon(Icons.settings, size: 30),
+    ];
+
+    return CurvedNavigationBar(
+      backgroundColor: Colors.transparent,
+      buttonBackgroundColor: Colors.blueAccent,
+      color: const Color.fromARGB(255, 50, 50, 50),
+      height: 60,
+      items: items,
+      index: _selectedIndex,
+      onTap: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        _navigateTo(index); // Call the navigation function
+      },
     );
   }
 }

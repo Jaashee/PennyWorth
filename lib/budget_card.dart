@@ -8,7 +8,7 @@ class BudgetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[900],
+      color: const Color.fromARGB(255, 50, 50, 50),
       elevation: 4.0,
       margin: EdgeInsets.all(8),
       child: Padding(

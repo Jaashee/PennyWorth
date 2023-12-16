@@ -17,10 +17,22 @@ class PennyworthApp extends StatelessWidget {
       title: 'Pennyworth',
       theme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.blueGrey,
+        scaffoldBackgroundColor: const Color.fromARGB(255, 200, 200, 200),
+        colorScheme: const ColorScheme.dark(
+          primary: Color.fromARGB(255, 50, 50, 50),
+          onPrimary: Colors.white,
+          secondary: Colors.blueGrey,
+          surface:
+              Color.fromARGB(255, 50, 50, 50), // Used for card background color
+        ),
+        textTheme: Theme.of(context).textTheme.copyWith(
+              bodyLarge: const TextStyle(color: Colors.white),
+              bodyMedium:
+                  const TextStyle(color: Color.fromARGB(179, 255, 255, 255)),
+            ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

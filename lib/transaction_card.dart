@@ -15,7 +15,7 @@ class TransactionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: EdgeInsets.all(15),
-            color: Colors.grey[850],
+            color: Color.fromARGB(255, 50, 50, 50),
             height: 75,
             child: Center(
               child: Row(
