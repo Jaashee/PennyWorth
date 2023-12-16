@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             const TitleCard(),
-            BudgetCard(
+            const BudgetCard(
               balance: '\$ 10000',
             ),
             Expanded(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pennyworth/gsheets_api.dart';
-
-import 'navbar.dart'; // Make sure this is correctly imported
+import 'navbar.dart';
 
 class TransactionsPage extends StatefulWidget {
+  const TransactionsPage({Key? key}) : super(key: key);
+
   @override
   _TransactionsPageState createState() => _TransactionsPageState();
 }
@@ -14,8 +15,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   void initState() {
     super.initState();
-    // Start loading the transactions when the page is initialized
     _loadTransactionsFuture = GoogleSheetsApi.loadTransactions();
+  }
+
+  void _deleteTransaction(int index) async {
+    await GoogleSheetsApi.deleteTransaction(
+        index); // Implement this method in your API class.
+    setState(() {
+      GoogleSheetsApi.currentTrans.removeAt(index);
+    });
   }
 
   @override
@@ -23,13 +31,13 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Scaffold(
       bottomNavigationBar: const NavBar(selectedIndex: 1),
       appBar: AppBar(
-        title: Text('Transactions'),
+        title: const Text('Transactions'),
       ),
       body: FutureBuilder<void>(
         future: _loadTransactionsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
@@ -38,10 +46,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
               itemBuilder: (context, index) {
                 final transaction = GoogleSheetsApi.currentTrans[index];
                 return TransactionCard(
-                  transName: transaction[
-                      0], // Assuming first element is the transaction name
-                  amount:
-                      transaction[1], // Assuming second element is the amount
+                  transName: transaction[0], // Transaction name
+                  amount: transaction[1], // Transaction amount
+                  onDelete: () => _deleteTransaction(index),
                 );
               },
             );
@@ -55,34 +62,28 @@ class _TransactionsPageState extends State<TransactionsPage> {
 class TransactionCard extends StatelessWidget {
   final String transName;
   final String amount;
+  final VoidCallback onDelete;
 
   const TransactionCard({
     Key? key,
     required this.transName,
     required this.amount,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      margin: EdgeInsets.all(8),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: EdgeInsets.all(15),
-          color: Color.fromARGB(255, 50, 50, 50),
-          height: 75,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.attach_money_rounded, size: 35),
-              Text(transName,
-                  style: TextStyle(fontSize: 22, color: Colors.white)),
-              Text('-\$' + amount,
-                  style: TextStyle(color: Colors.red, fontSize: 22)),
-            ],
-          ),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: ListTile(
+        title: Text(transName,
+            style: const TextStyle(fontSize: 22, color: Colors.white)),
+        trailing: Text('-\$' + amount,
+            style: const TextStyle(color: Colors.red, fontSize: 22)),
+        leading: IconButton(
+          icon: const Icon(Icons.delete, color: Colors.red),
+          onPressed: onDelete,
         ),
       ),
     );

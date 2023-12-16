@@ -7,11 +7,13 @@ class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _SettingsPageState createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _nameController = TextEditingController();
+  final Color _darkGrey = const Color.fromARGB(255, 50, 50, 50); // Navbar color
 
   @override
   void initState() {
@@ -27,6 +29,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _saveUserName(String userName) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userName', userName);
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      // To show quick pop-up message
+      const SnackBar(content: Text('Name updated successfully!')),
+    );
   }
 
   @override
@@ -42,33 +49,35 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Your Name',
-                border: OutlineInputBorder(),
+                hintText: 'Enter your name',
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                filled: true,
+                fillColor: _darkGrey,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none, // No border
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                labelStyle: const TextStyle(color: Colors.white),
+                hintStyle: const TextStyle(color: Colors.white70),
               ),
-              onSubmitted: (value) {
-                _saveUserName(value);
-                // Use a snackbar to show confirmation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Name updated successfully!'),
-                  ),
-                );
-              },
+              style: const TextStyle(color: Colors.white),
             ),
+            const SizedBox(height: 16),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: _darkGrey, // Button color
+                onPrimary: Colors.white, // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
               onPressed: () {
                 _saveUserName(_nameController.text);
-                // Use a snackbar to show confirmation
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Name updated successfully!'),
-                  ),
-                );
               },
               child: const Text('Save Name'),
             ),
-            // ...add other settings options here
           ],
         ),
       ),

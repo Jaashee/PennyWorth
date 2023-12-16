@@ -5,6 +5,7 @@ class TitleCard extends StatefulWidget {
   const TitleCard({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _TitleCardState createState() => _TitleCardState();
 }
 
@@ -28,12 +29,12 @@ class _TitleCardState extends State<TitleCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color.fromARGB(255, 50, 50, 50),
+      color: const Color.fromARGB(255, 50, 50, 50),
       elevation: 4.0,
-      margin: EdgeInsets.only(top: 40, left: 8, right: 8, bottom: 8),
+      margin: const EdgeInsets.only(top: 40, left: 8, right: 8, bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
+        child: SizedBox(
           height: 70,
           child: Align(
             alignment: Alignment.topLeft,
@@ -43,7 +44,7 @@ class _TitleCardState extends State<TitleCard> {
                   'P E N N Y W O R T H',
                   style: TextStyle(color: Colors.grey[500], fontSize: 16),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text('Welcome, $_userName', // Use the loaded user name
                     style: TextStyle(color: Colors.grey[500], fontSize: 16))
               ],
