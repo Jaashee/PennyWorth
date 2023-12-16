@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
 
 class GoogleSheetsApi {
@@ -20,7 +19,7 @@ class GoogleSheetsApi {
 ''';
 
 // spreadsheet id
-  static final _spreadsheetId = '1WvT7q6gwVUsi4LIQmrIvV3IAlpsMP9uMwoTpb_3fknQ';
+  static const _spreadsheetId = '1WvT7q6gwVUsi4LIQmrIvV3IAlpsMP9uMwoTpb_3fknQ';
   static final _gsheets = GSheets(_credentials);
   static Worksheet? _worksheet;
 

@@ -1,7 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class TitleCard extends StatelessWidget {
-  const TitleCard({super.key});
+class TitleCard extends StatefulWidget {
+  const TitleCard({Key? key}) : super(key: key);
+
+  @override
+  _TitleCardState createState() => _TitleCardState();
+}
+
+class _TitleCardState extends State<TitleCard> {
+  String _userName = 'User';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userName = prefs.getString('userName') ?? 'User';
+    setState(() {
+      _userName = userName;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +44,7 @@ class TitleCard extends StatelessWidget {
                   style: TextStyle(color: Colors.grey[500], fontSize: 16),
                 ),
                 SizedBox(height: 10),
-                Text('Welcome, User',
+                Text('Welcome, $_userName', // Use the loaded user name
                     style: TextStyle(color: Colors.grey[500], fontSize: 16))
               ],
             ),

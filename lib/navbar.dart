@@ -20,11 +20,11 @@ class _NavBarState extends State<NavBar> {
 
   // List of page widgets to navigate to
   final List<Widget> _pages = [
-    const HomePage(),
-    TransactionsPage(),
-    AddExpensePage(),
-    BudgetPage(),
-    SettingsPage(),
+    HomePage(), // index 0
+    TransactionsPage(), // index 1
+    AddExpensePage(), // index 2
+    BudgetPage(), // index 3
+    SettingsPage(), // index 4
   ];
 
   void _navigateTo(int index) {
