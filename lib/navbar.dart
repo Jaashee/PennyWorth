@@ -1,52 +1,21 @@
+// navbar.dart
 import 'package:flutter/material.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-
-import 'homepage.dart'; // Import your page widgets
-import 'transactionspage.dart';
-import 'add_expensepage.dart';
-import 'budgetpage.dart';
-import 'settingspage.dart';
 
 class NavBar extends StatefulWidget {
   final int selectedIndex;
+  final ValueChanged<int> onItemSelected;
 
   const NavBar({
     Key? key,
     this.selectedIndex = 0,
+    required this.onItemSelected,
   }) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _NavBarState createState() => _NavBarState();
 }
 
 class _NavBarState extends State<NavBar> {
-  late int _selectedIndex; // Will be initialized in initState
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedIndex =
-        widget.selectedIndex; // Use the initial index provided by the widget
-  }
-
-  // List of page widgets to navigate to
-  final List<Widget> _pages = [
-    const HomePage(), // index 0
-    const TransactionsPage(), // index 1
-    const AddExpensePage(), // index 2
-    const BudgetPage(), // index 3
-    const SettingsPage(), // index 4
-  ];
-
-  void _navigateTo(int index) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _pages[index],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
@@ -57,19 +26,16 @@ class _NavBarState extends State<NavBar> {
       const Icon(Icons.settings, size: 30),
     ];
 
-    return CurvedNavigationBar(
-      backgroundColor: Colors.transparent,
-      buttonBackgroundColor: const Color.fromARGB(255, 5, 140, 200),
-      color: const Color.fromARGB(255, 50, 50, 50),
-      height: 70,
-      items: items,
-      index: _selectedIndex,
-      onTap: (index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-        _navigateTo(index); // Call the navigation function
-      },
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      items: items.map((item) {
+        return BottomNavigationBarItem(
+          icon: item,
+          label: '',
+        );
+      }).toList(),
+      currentIndex: widget.selectedIndex,
+      onTap: widget.onItemSelected,
     );
   }
 }

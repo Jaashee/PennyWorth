@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'gsheets_api.dart';
+import 'package:pennyworth/gsheets_api.dart';
 
 class BudgetCard extends StatefulWidget {
   const BudgetCard({Key? key}) : super(key: key);
 
   @override
-  State<BudgetCard> createState() => _BudgetCardState();
+  _BudgetCardState createState() => _BudgetCardState();
 }
 
 class _BudgetCardState extends State<BudgetCard> {
@@ -22,71 +21,93 @@ class _BudgetCardState extends State<BudgetCard> {
 
   Future<void> _loadBudgetData() async {
     final prefs = await SharedPreferences.getInstance();
-    final budget = prefs.getDouble('monthlyBudget') ?? 0.0;
+    _monthlyBudget = prefs.getDouble('monthlyBudget') ?? 0.0;
 
-    // Fetch the transaction amounts
-    final transactionAmounts = await GoogleSheetsApi.getTransactionAmounts();
-    // Calculate the total spent by summing the negative amounts (expenses)
-    final spent = transactionAmounts.fold(
-        0.0, (sum, amount) => sum + (amount < 0 ? amount : 0));
+    if (GoogleSheetsApi.loading) {
+      await GoogleSheetsApi.loadTransactions();
+    }
 
-    setState(() {
-      _monthlyBudget = budget;
-      _currentSpent = spent.abs();
-    });
+    _currentSpent = GoogleSheetsApi.transactions
+        .fold<double>(0.0, (sum, transaction) => sum + transaction.amount);
+
+    setState(() {}); // Refresh UI after data load
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
+    ThemeData theme = Theme.of(context);
+    Color foregroundColor = theme.textTheme.bodyLarge?.color ?? Colors.white;
+    Color successColor = theme.colorScheme.secondary;
+    Color errorColor = theme.colorScheme.error;
+
+    return Card(
+      color: theme.cardColor, // Adapts to dark/light mode
+      elevation: 4.0,
       margin: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[900], // Assuming a dark theme
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 2), // changes position of shadow
-          ),
-        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Monthly Budget',
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Monthly Budget',
+              style: TextStyle(
+                fontSize: 24,
+                color: foregroundColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Set Budget: \$${_monthlyBudget.toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
+            const SizedBox(height: 8),
+            Text(
+              'Set Budget: \$${_monthlyBudget.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 18,
+                color: foregroundColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Current Spent: \$${_currentSpent.toStringAsFixed(2)}',
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.redAccent,
+            const SizedBox(height: 4),
+            Text(
+              'Current Spent: \$${_currentSpent.toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 18,
+                color:
+                    _currentSpent > _monthlyBudget ? errorColor : successColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: _currentSpent / (_monthlyBudget > 0 ? _monthlyBudget : 1),
-            backgroundColor: Colors.white.withOpacity(0.3),
-            valueColor: const AlwaysStoppedAnimation<Color>(Colors.greenAccent),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Stack(
+              children: [
+                Container(
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                LayoutBuilder(
+                  builder: (context, constraints) => AnimatedContainer(
+                    height: 8,
+                    width: constraints.maxWidth *
+                        (_currentSpent /
+                            _monthlyBudget.clamp(0.01, double.infinity)),
+                    duration: const Duration(milliseconds: 1200),
+                    curve: Curves.easeOut,
+                    decoration: BoxDecoration(
+                      color: _currentSpent > _monthlyBudget
+                          ? errorColor
+                          : successColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            // Optionally add an info icon button or other interactive elements here
+          ],
+        ),
       ),
     );
   }

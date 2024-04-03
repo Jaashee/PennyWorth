@@ -10,32 +10,19 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 4,
-        margin: const EdgeInsets.all(8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            color: const Color.fromARGB(255, 50, 50, 50),
-            height: 80,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Icon(
-                    Icons.attach_money_rounded,
-                    size: 35,
-                  ),
-                  Text(transName, style: const TextStyle(fontSize: 22)),
-                  Text(
-                    '-\$' + amount,
-                    style: const TextStyle(color: Colors.red, fontSize: 22),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ));
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: Theme.of(context).cardColor,
+      child: ListTile(
+        leading: const Icon(Icons.fastfood,
+            color: Colors.orange), // Icon based on category
+        title: Text('Food', style: Theme.of(context).textTheme.titleMedium),
+        subtitle: const Text('Today'),
+        trailing: const Text(
+          '-\$45.00',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }
 

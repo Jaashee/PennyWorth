@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'navbar.dart';
-
 class BudgetPage extends StatefulWidget {
-  const BudgetPage({Key? key}) : super(key: key);
+  const BudgetPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -43,7 +41,6 @@ class _BudgetPageState extends State<BudgetPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const NavBar(selectedIndex: 3),
       appBar: AppBar(
         title: const Text('Set Monthly Budget'),
       ),
@@ -83,9 +80,8 @@ class _BudgetPageState extends State<BudgetPage> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary:
-                        const Color.fromARGB(255, 92, 92, 92), // Button color
-                    onPrimary: Colors.white, // Text color
+                    foregroundColor: Colors.white, primary:
+                        const Color.fromARGB(255, 92, 92, 92), // Text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
