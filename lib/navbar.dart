@@ -36,6 +36,8 @@ class _NavBarState extends State<NavBar> {
       }).toList(),
       currentIndex: widget.selectedIndex,
       onTap: widget.onItemSelected,
+      backgroundColor: Colors.white,
+      fixedColor: Colors.grey[600],
     );
   }
 }

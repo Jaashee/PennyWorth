@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pennyworth/gsheets_api.dart';
 import 'package:pennyworth/loading_circle.dart';
 import 'package:pennyworth/title_card.dart';
@@ -34,6 +35,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Assuming you have a method to get the category details. Modify as needed.
+  IconData getCategoryIcon(String category) {
+    // Your logic to get the icon data based on the category
+    // For now, let's return a dummy icon
+    return FontAwesomeIcons.utensils; // Example icon
+  }
+
+  Color getCategoryColor(String category) {
+    // Your logic to get the color based on the category
+    // For now, let's return a dummy color
+    return Colors.orange; // Example color
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,11 +64,23 @@ class _HomePageState extends State<HomePage> {
                       itemCount: GoogleSheetsApi.transactions.length,
                       itemBuilder: (context, index) {
                         final transaction = GoogleSheetsApi.transactions[index];
+
+                        // You may need to add logic to fetch the category details
+                        IconData icon = getCategoryIcon(transaction.category);
+                        Color iconColor =
+                            getCategoryColor(transaction.category);
+
                         return TransactionCard(
-                          transName: transaction.name,
-                          amount: transaction.amount.toString(),
-                          // Add onDelete or any other necessary callback here
-                        );
+                            transName: transaction.name,
+                            amount: transaction.amount.toString(),
+                            categoryName: transaction.category,
+                            categoryIcon: icon,
+                            iconColor: iconColor,
+                            onDelete: () {
+                              // Your delete logic
+                            },
+                            description: '',
+                            category: '');
                       },
                     ),
             ),

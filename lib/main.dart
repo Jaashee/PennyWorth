@@ -22,37 +22,52 @@ void main() async {
   );
 }
 
+
+
 // Light Theme
 final ThemeData _lightTheme = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.blueGrey, // A swatch that doesn't strain the eyes
-  hintColor: Colors.amberAccent, // A warm, inviting color for accents
+  primarySwatch: Colors.amber, // A swatch that doesn't strain the eyes
+  hintColor: Colors.amber[200],
+  colorScheme: const ColorScheme.light(
+    secondary: Colors.grey,
+  ),
   textTheme: const TextTheme(
     displayLarge: TextStyle(
-        fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black87),
-    bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black87),
+        fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
+    bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black),
     labelLarge: TextStyle(color: Colors.white),
   ),
-  iconTheme: IconThemeData(color: Colors.blueGrey[600]),
+  iconTheme: IconThemeData(color: Colors.grey[300]),
   buttonTheme: ButtonThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    buttonColor: Colors.blueGrey,
+    buttonColor: Colors.grey[300],
   ),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
   ),
   appBarTheme: AppBarTheme(
     color: Colors.blueGrey[100],
-    iconTheme: IconThemeData(color: Colors.blueGrey[800]),
+    iconTheme: IconThemeData(color: Colors.grey[500]),
   ),
-  // Additional customizations...
+  progressIndicatorTheme: ProgressIndicatorThemeData(
+    // This will be the background color of the progress bar
+    color: Colors.grey.withOpacity(0.3),
+  ),
+  
+  // ... other customizations
 );
 
 // Dark Theme
 final ThemeData _darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primarySwatch: Colors.teal,
-  hintColor: Colors.lightBlueAccent,
+  primarySwatch: Colors.amber,
+  hintColor: Colors.amberAccent.shade100,
+  colorScheme: const ColorScheme.dark(
+    // ... other colors
+    secondary:
+        Colors.orange, // This color will be used for the progress bar fill
+  ),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
         fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.amber),
@@ -73,8 +88,13 @@ final ThemeData _darkTheme = ThemeData(
     color: Colors.amber[800],
     iconTheme: IconThemeData(color: Colors.amberAccent[200]),
   ),
-  // Additional customizations...
+  progressIndicatorTheme: ProgressIndicatorThemeData(
+    // This will be the background color of the progress bar
+    color: Colors.grey.withOpacity(0.3),
+  ),
+  // ... other customizations
 );
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

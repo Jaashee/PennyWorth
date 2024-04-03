@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pennyworth/gsheets_api.dart';
 
 class BudgetCard extends StatefulWidget {
-  const BudgetCard({Key? key}) : super(key: key);
+  const BudgetCard({super.key});
 
   @override
   _BudgetCardState createState() => _BudgetCardState();

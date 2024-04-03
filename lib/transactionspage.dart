@@ -56,7 +56,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 final transaction = GoogleSheetsApi.transactions[index];
                 DateTime parsedDate;
                 try {
-                  parsedDate = DateFormat('YYYY-MM-DD').parse(transaction.date);
+                  parsedDate = DateFormat('yyyy-mm-dd').parse(transaction.date);
                 } on FormatException {
                   // Handle the case where the date format isn't correct or is null
                   parsedDate = DateTime

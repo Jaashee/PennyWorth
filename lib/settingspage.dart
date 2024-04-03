@@ -44,8 +44,15 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _toggleDarkMode(bool isOn) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isDarkMode', isOn);
-    Provider.of<ThemeModeNotifier>(context, listen: false).themeMode =
-        isOn ? ThemeMode.dark : ThemeMode.light;
+
+    // Notify listeners that the theme mode has changed.
+    var themeNotifier = Provider.of<ThemeModeNotifier>(context, listen: false);
+    themeNotifier.toggleTheme(isOn);
+
+    // Rebuild the current page to reflect the theme change immediately.
+    setState(() {
+      _isDarkMode = isOn;
+    });
   }
 
   @override
@@ -81,8 +88,9 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: const Color.fromARGB(255, 50, 50, 50), // Button color
-                onPrimary: Colors.white, // Text color
+                foregroundColor: Colors.white,
+                backgroundColor:
+                    const Color.fromARGB(255, 50, 50, 50), // Text color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
