@@ -22,8 +22,6 @@ void main() async {
   );
 }
 
-
-
 // Light Theme
 final ThemeData _lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -50,12 +48,16 @@ final ThemeData _lightTheme = ThemeData(
     color: Colors.blueGrey[100],
     iconTheme: IconThemeData(color: Colors.grey[500]),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: Colors.black,
+      backgroundColor: Colors.amber, // Button background color for light theme
+    ),
+  ),
   progressIndicatorTheme: ProgressIndicatorThemeData(
     // This will be the background color of the progress bar
     color: Colors.grey.withOpacity(0.3),
   ),
-  
-  // ... other customizations
 );
 
 // Dark Theme
@@ -92,9 +94,15 @@ final ThemeData _darkTheme = ThemeData(
     // This will be the background color of the progress bar
     color: Colors.grey.withOpacity(0.3),
   ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
+      backgroundColor:
+          Colors.amber[700], // Button background color for dark theme
+    ),
+  ),
   // ... other customizations
 );
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -44,8 +44,15 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 leading: Icon(icon,
                     color: Color(
                         int.parse(category.color.replaceFirst('#', '0xff')))),
-                title: Text(category.name,
-                    style: const TextStyle(color: Colors.white)),
+                title: Text(
+                  category.name,
+                  style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors
+                            .black, // This will change color based on the theme
+                  ),
+                ),
                 onTap: () {
                   setState(() {
                     _selectedCategory = category;
@@ -130,7 +137,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   void _resetForm() {
     _textControllerAmount.clear();
     _textControllerItem.clear();
-    _textControllerDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _textControllerDate.text = DateFormat('yyyy-mm-dd').format(DateTime.now());
     setState(() {
       _selectedCategory = null;
       _selectedDate = DateTime.now();
@@ -147,7 +154,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _textControllerDate.text = DateFormat('yyyy-MM-dd').format(picked);
+        _textControllerDate.text = DateFormat('yyyy-mm-dd').format(picked);
       });
     }
   }
@@ -195,7 +202,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                     filled: true,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    labelStyle: const TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -207,7 +214,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         )
                       : const Text(
                           'Select Category',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: Colors.white),
                         ),
                   trailing: IconButton(
                     icon: const Icon(Icons.add, color: Colors.white),
