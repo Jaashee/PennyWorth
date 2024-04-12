@@ -1,98 +1,289 @@
+import 'dart:io';
+
 import 'package:gsheets/gsheets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class GoogleSheetsApi {
   //Create credtials for gsheet api
   static const _credentials = r'''
-{
-  "type": "service_account",
-  "project_id": "pennywoth-gsheet",
-  "private_key_id": "c70a06be98cabd8655a0f19005fa3ce8dcc68117",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCsjOZL/eD6g60X\nSM+ozaqIEqxCqimpqvGsJ+/KeWdOkep2BQozDmcvVKf2CHDmfM9Fde32h6zgPawC\nQ3RmlfH4KtTRXedcANYjMfcHlkHOKJ3Zp4dNt8UNgSmPIYsGuVbTv+6iQ6lss5o8\n+wtS6UsXWJCydwyZOf8kSeKSgHBhmqF1jw3/SG82zxzZ7u+lT+wQ/pKh7SiD3jaz\ny563C0WFMpWiTpbna0OxHiBuV3CEKubrjNfmY2dA8whLM0IYQE+f5hjNJ2NczyhD\nZJGvKr3/3jBDTHXt4MIvtIT/cq9ZGJBK89yLiMdzdESnZmrVTyqL4JTYZkDLDIyz\nCzAgaamlAgMBAAECggEABUnR2r0y+1BjAaZGfqssdFOi6L88oeyiz/60zh3GJnW5\nOQHyztmCec/t0ERZJL9GbPzihYFEX/3Cb4OBd43KSdoqNG86BYhXZOJ6AcccjpB5\n19gdAOVGePLNmmiMLnzksaz6vDggkYGg8B/K2zEUbFFAKVL+puZMvIMIGof+Y/AX\n5z7uKIgRvnMeinb4V93c8cuhRxFnjeTBVRGMRJQH9rTn+gByk16Le0Tf5pFL/aje\niL1DthuI5lDPhzm5NNkyXxGZ18a9wn1j0MvjTiUYheDXwyQkXbNYaL7MGH50d0sp\nD0pqIlIZzjmEHJjNjV7qdGYIPvMbjlzHl58SEjGIqwKBgQDdVG60q8fLByEzYkiU\n/W5jzDJMdFOTdOisLOK1m1tfs+FqD2R2HbGm6xUEi2Yz3uwa/vbz3/5AGmyc0Qpi\nhSrXemL+I2IENMrye7Q8Jw/1Rrho5bK/Mtsw4HXhNDcr+U2jTxE++w3b3BlPZ03l\nPNaUiiNSKK1gZQLb2CySFWd0GwKBgQDHlFvesVef3K3HqhQ+IJHSvpqmqdZPNJZ0\ntuqv0c1FKw3wVmtGIzXYcfDn9PsMkRFUSlLT+H6ejVFVI7EMM+aXRlucZYJp+ktH\nMDVtjWIi1115mTPWdo7/5dgW+sn7MzVv0ffbhc1ZPXLdWCwJsIjgM7hBCaKrjNbQ\naAIhAGe1PwKBgQCd9QgdQQuRxkDXnykVy9jguHadQdfzwNfdKRuTaJDJuGMDgoC8\nG20SJ2wUljgWhN4UViqA2jdmIHWrZTT4Ivn0VpAXt8DYJ6U/cTGsTGSDNDmgA26S\nLgVo2IjIdK97Xq0eA+vW+u1lH6ugk6VwGP87e2rB0+4IgY6Mv7bvev8eSQKBgCMN\nJU1pLBCBe2vTrRZ0NegjXZnjviXPAJWjAni6iiiZtSr+onyA9pX6/OpgFi9Q0xBQ\ntVdRDzvdaelgCVoxS1BKJRDEqzDdqpboGpoQ+KlR1bLjez0xOVAsF9WBWjPp/HqV\nD8jYKQaBSkkhkSpqfL+TlcqmXJFwfNHBUo5lOdGVAoGAUxic+YmRy3Iy+2Yv6ror\nHxecWOqQbUYjJ3HLjl2ndajjlMIOM0nGf4ICqQmSFQ0lDIMjQUnO4eLnHlYffMwh\nKA8MO5LpfLLAO0DLWUVbNuvjDJA+uTh9t6aeZ0dsMPEDvorJmhYi4KHG+Yx5ukxy\nwl1/Yz8U9NM4xjUpXY0XVog=\n-----END PRIVATE KEY-----\n",
-  "client_email": "pennywoth-gsheet@pennywoth-gsheet.iam.gserviceaccount.com",
-  "client_id": "112549723413127034761",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pennywoth-gsheet%40pennywoth-gsheet.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
+
 ''';
 
 // spreadsheet id
-  static const _spreadsheetId = '1WvT7q6gwVUsi4LIQmrIvV3IAlpsMP9uMwoTpb_3fknQ';
+  static const _spreadsheetId = '1MB0Y8gnErQF4hKs4-COXrgFs7OeoaSExeKXHyhK9sNA';
   static final _gsheets = GSheets(_credentials);
-  static Worksheet? _worksheet;
+  static Worksheet? _transactionWorksheet;
+  static Worksheet? _categoryWorksheet;
 
-  //varibles
-  static int numOfTrans = 0;
-  static List<List<dynamic>> currentTrans = [];
+  // Add a list to keep categories
+  static List<Category> categories = [];
+
+  // Add a list to keep transactions
+  static List<Transaction> transactions = [];
+
+  //varibles for loading
   static bool loading = true;
 
-  Future init() async {
+  // Initialize Google Sheets
+  Future<void> init() async {
     final ss = await _gsheets.spreadsheet(_spreadsheetId);
-    _worksheet = ss.worksheetByTitle('Worksheet1');
-    countRows();
+    _transactionWorksheet = ss.worksheetByTitle('Transactions');
+    _categoryWorksheet = ss.worksheetByTitle('Categories');
+    await loadCategories(); // Fetch categories upon initialization
+    await loadTransactions(); // Transaction rows
   }
 
-  static Future countRows() async {
-    while ((await _worksheet!.values.value(column: 1, row: numOfTrans + 1)) !=
-        '') {
-      numOfTrans++;
+// A method to export data to CSV
+  static Future<String> exportTransactions() async {
+    if (_transactionWorksheet == null) {
+      return 'Worksheet not initialized';
     }
-    loadTransactions();
+
+    final transactionsData = await _transactionWorksheet!.values.map.allRows();
+    if (transactionsData == null) {
+      return 'No data to export';
+    }
+
+    // A method to convert Excel date serial numbers to DateTime
+    DateTime excelDateToDateTime(double excelDate) {
+      // The Excel epoch starts on January 1, 1900
+      return DateTime(1899, 12, 30).add(Duration(days: excelDate.toInt()));
+    }
+
+    // Get today's date to include in the file name
+    String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    final StringBuffer csvData = StringBuffer();
+    for (var transaction in transactionsData) {
+      final double excelDate = double.tryParse(transaction['Date']!) ?? 0;
+      final formattedDate = excelDateToDateTime(excelDate);
+      final dateString = DateFormat('yyyy-MM-dd').format(formattedDate);
+
+      csvData.writeln(
+          '${transaction['Id']},${transaction['Name']},${transaction['Amount']},$dateString,${transaction['Category']}');
+    }
+
+    // Define the filename with today's date
+    final String fileName = 'transactions_$todayDate.csv';
+
+    // Get the downloads directory
+    final directory = (await getDownloadsDirectory()) ??
+        (await getExternalStorageDirectory());
+    final path = directory!.path;
+    final file = File('$path/$fileName');
+
+    // Write the file
+    await file.writeAsString(csvData.toString());
+
+    return 'Data exported successfully to $path/$fileName';
   }
 
-  static Future loadTransactions() async {
-    if (_worksheet == null) return;
+// Load transactions from Google Sheets
+  static Future<void> loadTransactions() async {
+    if (_transactionWorksheet == null) return;
 
-    for (int i = 1; i < numOfTrans; i++) {
-      final String transName =
-          await _worksheet!.values.value(column: 1, row: i + 1);
-      final String amount =
-          await _worksheet!.values.value(column: 2, row: i + 1);
+    transactions
+        .clear(); // Clear the list before adding to it to avoid duplicates
 
-      if (currentTrans.length < numOfTrans) {
-        currentTrans.add([transName, amount]);
+    final transactionsData = await _transactionWorksheet!.values.map.allRows();
+    if (transactionsData != null) {
+      for (var transactionRow in transactionsData) {
+        final id = transactionRow['Id'] ?? const Uuid().v1();
+        final name = transactionRow['Name'] ?? 'No Name';
+        final amount = double.tryParse(transactionRow['Amount'] ?? '0') ?? 0.0;
+        final date = transactionRow['Date'] ??
+            ''; // Ensure Date column exists in your sheet
+        final category = transactionRow['Category'] ?? 'No Category';
+
+        transactions.add(Transaction(
+          id: id,
+          name: name,
+          amount: amount,
+          date: date,
+          category: category,
+        ));
       }
     }
 
     loading = false;
   }
 
-  static Future insert(String name, String amount) async {
-    if (_worksheet == null) return;
-    numOfTrans++;
-    currentTrans.add([name, amount]);
-    await _worksheet!.values.appendRow([name, amount]);
+// Insert a new transaction into Google Sheets
+  static Future<void> insert(Transaction transaction) async {
+    if (_transactionWorksheet == null) return;
+
+    final id = const Uuid().v1();
+    await _transactionWorksheet!.values.appendRow([
+      id,
+      transaction.name,
+      transaction.amount.toString(),
+      transaction.date,
+      transaction.category,
+    ]);
+
+    transactions.add(transaction.copyWith(id: id));
   }
 
-  static Future<void> deleteTransaction(int index) async {
-    // Adjust the row number as needed based on your sheet's structure
-    final rowNum = index + 2; // Assuming there is a header row
-    await _worksheet!.deleteRow(rowNum);
+// Update a transaction in Google Sheets
+  static Future<void> updateTransaction(Transaction transaction) async {
+    if (_transactionWorksheet == null || transaction.id.isEmpty) return;
+
+    // Find the row number for the transaction to update
+    final rowIndex = transactions.indexWhere((t) => t.id == transaction.id) +
+        2; // +2 for headers and 1-based index
+    await _transactionWorksheet!.values.insertRow(rowIndex, [
+      transaction.id,
+      transaction.name,
+      transaction.amount.toString(),
+      transaction.category,
+    ]);
+    final index = transactions.indexWhere((t) => t.id == transaction.id);
+    if (index != -1) {
+      transactions[index] = transaction; // Update local list
+    }
   }
 
-  static Future<void> saveMonthlyBudget(double budget) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('monthlyBudget', budget);
+// Delete a transaction from Google Sheets
+  static Future<void> deleteTransaction(String transactionId) async {
+    if (_transactionWorksheet == null) return;
+
+    final rowIndex = transactions.indexWhere((t) => t.id == transactionId) +
+        2; // +2 for headers and 1-based index
+    if (rowIndex > 1) {
+      // Ensures we don't delete headers
+      await _transactionWorksheet!.deleteRow(rowIndex);
+      transactions
+          .removeWhere((t) => t.id == transactionId); // Update local list
+    }
   }
 
-  static Future<double> getMonthlyBudget() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble('monthlyBudget') ?? 0.0;
+  static Future<void> loadCategories() async {
+    if (_categoryWorksheet == null) {
+      // Initialize the worksheet or handle the error
+      return;
+    }
+
+    categories.clear(); // Clear existing categories
+
+    // Fetch the categories from the worksheet
+    final categoriesData = await _categoryWorksheet!.values.map.allRows();
+    if (categoriesData != null) {
+      for (var categoryRow in categoriesData) {
+        final id = categoryRow['Id'] ??
+            const Uuid().v1(); // Ensuring an ID is always present
+        final name = categoryRow['Name'] ?? 'Unnamed Category';
+        final icon = categoryRow['Icon'] ?? ''; // Default icon if not specified
+        final color =
+            categoryRow['Color'] ?? '#FFFFFF'; // Default color if not specified
+
+        // Create a new category and add it to the list
+        categories.add(Category(id: id, name: name, icon: icon, color: color));
+      }
+    }
+
+    loading = false; // Indicate that categories have finished loading
   }
 
-  static Future<void> resetBudget() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('monthlyBudget');
-    currentTrans.clear();
+  // Add a new category to Google Sheets
+  static Future<void> addCategory(Category category) async {
+    if (_categoryWorksheet == null) return;
+
+    final id = DateTime.now().millisecondsSinceEpoch.toString(); // Unique ID
+    await _categoryWorksheet!.values.appendRow([
+      id,
+      category.name,
+      category.icon,
+      category.color,
+    ]);
+    categories.add(category.copyWith(id: id)); // Update local list
   }
 
-  static Future<List<double>> getTransactionAmounts() async {
-    // Assuming each transaction is a list, and the amount is the second item
-    return currentTrans.map((transaction) {
-      return double.tryParse(transaction[1]) ?? 0.0;
-    }).toList();
+  // Update a category in Google Sheets
+  static Future<void> updateCategory(Category category) async {
+    if (_categoryWorksheet == null || category.id.isEmpty) return;
+
+    // Find the row number for the category to update
+    final rowIndex = categories.indexWhere((c) => c.id == category.id) +
+        2; // +2 for headers and 1-based index
+    await _categoryWorksheet!.values.insertRow(rowIndex, [
+      category.id,
+      category.name,
+      category.icon,
+      category.color,
+    ]);
+    final index = categories.indexWhere((c) => c.id == category.id);
+    if (index != -1) {
+      categories[index] = category; // Update local list
+    }
+  }
+}
+
+class Transaction {
+  String id;
+  String name;
+  double amount;
+  String date; // Date should be a string
+  String category;
+
+  Transaction({
+    required this.id,
+    required this.name,
+    required this.amount,
+    required this.date, // Add the date parameter
+    required this.category,
+  });
+
+  Transaction.empty()
+      : id = '',
+        name = '',
+        amount = 0.0,
+        category = '',
+        date = '';
+
+  // Copy method for immutability
+  Transaction copyWith({
+    String? id,
+    String? name,
+    double? amount,
+    String? category,
+    String? date,
+  }) {
+    return Transaction(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      amount: amount ?? this.amount,
+      category: category ?? this.category,
+      date: date ?? this.date,
+    );
+  }
+}
+
+// Define a Category class
+class Category {
+  final String id;
+  final String name;
+  final String icon; // Store the filename of the icon
+  final String color; // Store the ARGB value as a string
+
+  Category(
+      {required this.id,
+      required this.name,
+      required this.icon,
+      required this.color});
+
+  Category copyWith({
+    String? id,
+    String? name,
+    String? icon,
+    String? color,
+  }) {
+    return Category(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      icon: icon ?? this.icon,
+      color: color ?? this.color,
+    );
   }
 }
