@@ -100,6 +100,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
         return FontAwesomeIcons.gift;
       case 'fa-ellipsis-h':
         return FontAwesomeIcons.ellipsis;
+      case 'fa-repeat':
+        return FontAwesomeIcons.repeat;
       default:
         return FontAwesomeIcons
             .circleQuestion; // A default icon in case the name doesn't match
@@ -137,7 +139,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
   void _resetForm() {
     _textControllerAmount.clear();
     _textControllerItem.clear();
-    _textControllerDate.text = DateFormat('yyyy-mm-dd').format(DateTime.now());
+    _textControllerDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     setState(() {
       _selectedCategory = null;
       _selectedDate = DateTime.now();
@@ -154,7 +156,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _textControllerDate.text = DateFormat('yyyy-mm-dd').format(picked);
+        _textControllerDate.text = DateFormat('yyyy-MM-dd').format(picked);
       });
     }
   }

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pennyworth/gsheets_api.dart';
 
 class TransactionsPage extends StatefulWidget {
-  const TransactionsPage({Key? key}) : super(key: key);
+  const TransactionsPage({super.key});
 
   @override
   _TransactionsPageState createState() => _TransactionsPageState();
@@ -12,9 +12,15 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
+  int? selectedYear;
+  int? selectedMonth;
+  List<Transaction> filteredTransactions = [];
+
   @override
   void initState() {
     super.initState();
+    selectedYear = DateTime.now().year;
+    selectedMonth = DateTime.now().month;
     loadTransactions();
   }
 
@@ -30,6 +36,43 @@ class _TransactionsPageState extends State<TransactionsPage> {
     }
   }
 
+  DateTime excelDateToDateTime(double excelDate) {
+    return DateTime(1899, 12, 30).add(Duration(days: excelDate.toInt()));
+  }
+
+  void filterTransactions() {
+    filteredTransactions = GoogleSheetsApi.transactions.where((transaction) {
+      try {
+        final excelDate = double.tryParse(transaction.date);
+        if (excelDate != null) {
+          DateTime transactionDate = excelDateToDateTime(excelDate);
+          return transactionDate.year == selectedYear &&
+              transactionDate.month == selectedMonth;
+        } else {
+          print('Error parsing date: ${transaction.date}');
+        }
+      } catch (e) {
+        print('Error parsing date: ${transaction.date}, Error: $e');
+      }
+      return false; // If parsing fails, exclude this transaction
+    }).toList();
+    setState(() {}); // Refresh the UI with the filtered list
+  }
+
+  void onYearChanged(int? year) {
+    setState(() {
+      selectedYear = year;
+      filterTransactions();
+    });
+  }
+
+  void onMonthChanged(int? month) {
+    setState(() {
+      selectedMonth = month;
+      filterTransactions();
+    });
+  }
+
   // This method can be called from outside to reload transactions
   void reloadData() {
     loadTransactions();
@@ -42,25 +85,122 @@ class _TransactionsPageState extends State<TransactionsPage> {
     });
   }
 
+  void showYearPicker() {
+    showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Year'),
+          children: List<Widget>.generate(10, (int index) {
+            int year = DateTime.now().year - index;
+            return SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, year);
+              },
+              child: Text(year.toString()),
+            );
+          }),
+        );
+      },
+    ).then((int? selectedYear) {
+      if (selectedYear != null) {
+        onYearChanged(selectedYear);
+      }
+    });
+  }
+
+  void showMonthPicker() {
+    showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select Month'),
+          children: List<Widget>.generate(12, (int index) {
+            int month = index + 1;
+            return SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, month);
+              },
+              child: Text(DateFormat('MMMM').format(DateTime(0, month))),
+            );
+          }),
+        );
+      },
+    ).then((int? selectedMonth) {
+      if (selectedMonth != null) {
+        onMonthChanged(selectedMonth);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transactions'),
+        backgroundColor: Theme.of(context).primaryColor,
+        title: const Text('Transactions - Select Year and Month'),
+        actions: const <Widget>[],
       ),
-      body: GoogleSheetsApi.loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: GoogleSheetsApi.transactions.length,
+      body: Column(
+        children: [
+          // New date selection UI at the top of the transactions list
+          Container(
+            color: Theme.of(context).primaryColor, // Match the theme
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                TextButton.icon(
+                  // Year Button
+                  icon: const Icon(Icons.calendar_today),
+                  label: Text('Year: $selectedYear'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primary, // Background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  onPressed: showYearPicker,
+                ),
+                TextButton.icon(
+                  // Month Button
+                  icon: const Icon(Icons.calendar_view_month),
+                  label: Text('Month: $selectedMonth'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primary, // Background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  onPressed: showMonthPicker,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            // Wrap your ListView.builder in an Expanded widget
+            child: ListView.builder(
+              itemCount: filteredTransactions.length,
               itemBuilder: (context, index) {
-                final transaction = GoogleSheetsApi.transactions[index];
+                final transaction = filteredTransactions[index];
                 DateTime parsedDate;
                 try {
-                  parsedDate = DateFormat('yyyy-mm-dd').parse(transaction.date);
-                } on FormatException {
-                  // Handle the case where the date format isn't correct or is null
-                  parsedDate = DateTime
-                      .now(); // Fallback to current date or some default
+                  final excelDate = double.tryParse(transaction.date);
+                  if (excelDate != null) {
+                    parsedDate = excelDateToDateTime(excelDate);
+                  } else {
+                    throw const FormatException(
+                        'The date is not in an Excel serial number format.');
+                  }
+                } catch (e) {
+                  print('Error parsing date: ${transaction.date}, Error: $e');
+                  parsedDate = DateTime.now(); // Fallback to current date
                 }
                 return TransactionCard(
                   transName: transaction.name,
@@ -71,6 +211,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 );
               },
             ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -99,6 +242,7 @@ class TransactionCard extends StatelessWidget {
     'Pets': FontAwesomeIcons.paw,
     'Gifts & Donations': FontAwesomeIcons.gift,
     'Miscellaneous': FontAwesomeIcons.ellipsis,
+    'Subscription': FontAwesomeIcons.repeat,
     // Add more categories and corresponding icons here
   };
 
@@ -118,6 +262,7 @@ class TransactionCard extends StatelessWidget {
     'Pets': Colors.brown,
     'Gifts & Donations': Colors.pinkAccent,
     'Miscellaneous': Colors.grey,
+    'Subscription': Colors.cyan,
     // Add more categories and corresponding colors here
   };
 

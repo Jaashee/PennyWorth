@@ -30,18 +30,23 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  gsheets:
-  shared_preferences:
+  gsheets: ^0.5.0
+  shared_preferences: ^2.2.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons:
-  font_awesome_flutter:
-  fl_chart:
-  intl:
-  flutter_colorpicker:
-  uuid:
-  provider:
+  cupertino_icons: ^1.0.6
+  font_awesome_flutter: ^10.7.0
+  fl_chart: ^0.67.0
+  intl: ^0.19.0
+  flutter_colorpicker: ^1.0.3
+  uuid: ^4.3.3
+  provider: ^6.1.2
   curved_navigation_bar: ^1.0.3
+  path_provider:
+  permission_handler:
+  http:
+  file_picker:
+  open_filex:
 
 dev_dependencies:
   flutter_test:

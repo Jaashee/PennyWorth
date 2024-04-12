@@ -22,86 +22,101 @@ void main() async {
   );
 }
 
+// Define common styles and colors
+const Color _lightPrimaryColor = Color(0xFFE7E7E8);
+const Color _darkPrimaryColor = Color(0xFF18191A);
+const Color _accentColor = Color(0xFF007FFF); // A modern blue accent color
+
+// Reusable text theme
+TextTheme _buildTextTheme(TextTheme base, Color textColor) {
+  return base.copyWith(
+    displayLarge: base.displayLarge?.copyWith(
+        fontSize: 24.0, fontWeight: FontWeight.bold, color: textColor),
+    bodyLarge: base.bodyLarge?.copyWith(fontSize: 16.0, color: textColor),
+    labelLarge: base.labelLarge?.copyWith(color: textColor),
+  );
+}
+
 // Light Theme
 final ThemeData _lightTheme = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.amber, // A swatch that doesn't strain the eyes
-  hintColor: Colors.amber[200],
+  primaryColor: _lightPrimaryColor,
+  scaffoldBackgroundColor: Colors.white,
   colorScheme: const ColorScheme.light(
-    secondary: Colors.grey,
+    primary: _lightPrimaryColor,
+    secondary: _accentColor,
+    onPrimary: Colors.black,
+    onSecondary: Colors.white,
   ),
-  textTheme: const TextTheme(
-    displayLarge: TextStyle(
-        fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
-    bodyLarge: TextStyle(fontSize: 16.0, color: Colors.black),
-    labelLarge: TextStyle(color: Colors.white),
-  ),
-  iconTheme: IconThemeData(color: Colors.grey[300]),
-  buttonTheme: ButtonThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    buttonColor: Colors.grey[300],
-  ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-  ),
-  appBarTheme: AppBarTheme(
-    color: Colors.blueGrey[100],
-    iconTheme: IconThemeData(color: Colors.grey[500]),
+  textTheme: _buildTextTheme(ThemeData.light().textTheme, Colors.black),
+  iconTheme: const IconThemeData(color: _accentColor),
+  appBarTheme: const AppBarTheme(
+    color: _lightPrimaryColor,
+    iconTheme: IconThemeData(color: Colors.black),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.black,
-      backgroundColor: Colors.amber, // Button background color for light theme
+      foregroundColor: Colors.white,
+      backgroundColor: _accentColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
   ),
-  progressIndicatorTheme: ProgressIndicatorThemeData(
-    // This will be the background color of the progress bar
-    color: Colors.grey.withOpacity(0.3),
+  buttonTheme: ButtonThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    buttonColor: _accentColor,
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+    enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: _accentColor)),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: _accentColor,
+    ),
   ),
 );
 
 // Dark Theme
 final ThemeData _darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primarySwatch: Colors.amber,
-  hintColor: Colors.amberAccent.shade100,
+  primaryColor: _darkPrimaryColor,
+  scaffoldBackgroundColor: const Color(0xFF242526),
   colorScheme: const ColorScheme.dark(
-    // ... other colors
-    secondary:
-        Colors.orange, // This color will be used for the progress bar fill
+    primary: _darkPrimaryColor,
+    secondary: _accentColor,
+    onPrimary: Colors.white,
+    onSecondary: Colors.black,
   ),
-  textTheme: TextTheme(
-    displayLarge: const TextStyle(
-        fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.amber),
-    bodyLarge: TextStyle(fontSize: 16.0, color: Colors.amber[100]),
-    labelLarge: const TextStyle(color: Colors.black),
-  ),
-  iconTheme: IconThemeData(color: Colors.amberAccent[200]),
-  buttonTheme: ButtonThemeData(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    buttonColor: Colors.amber,
-  ),
-  inputDecorationTheme: InputDecorationTheme(
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-    fillColor: Colors.amber[700],
-    filled: true,
-  ),
-  appBarTheme: AppBarTheme(
-    color: Colors.amber[800],
-    iconTheme: IconThemeData(color: Colors.amberAccent[200]),
-  ),
-  progressIndicatorTheme: ProgressIndicatorThemeData(
-    // This will be the background color of the progress bar
-    color: Colors.grey.withOpacity(0.3),
+  textTheme: _buildTextTheme(ThemeData.dark().textTheme, Colors.white),
+  iconTheme: const IconThemeData(color: _accentColor),
+  appBarTheme: const AppBarTheme(
+    color: _darkPrimaryColor,
+    iconTheme: IconThemeData(color: Colors.white),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor:
-          Colors.amber[700], // Button background color for dark theme
+      foregroundColor: Colors.black,
+      backgroundColor: _accentColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
   ),
-  // ... other customizations
+  buttonTheme: ButtonThemeData(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    buttonColor: _accentColor,
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+    enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: _accentColor)),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: _accentColor,
+    ),
+  ),
 );
 
 class MyApp extends StatelessWidget {

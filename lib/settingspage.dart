@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:pennyworth/gsheets_api.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pennyworth/theme_mode_notifier.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -107,6 +109,30 @@ class _SettingsPageState extends State<SettingsPage> {
               activeColor: Colors.blue, // or any other color you prefer
               inactiveThumbColor: Colors.grey,
               inactiveTrackColor: Colors.white30,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final result = await GoogleSheetsApi.exportTransactions();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(result)),
+                );
+              },
+              child: const Text('Export To CSV'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                // Define the path of the file.
+                // This should be the absolute path of the file you want to open.
+
+                // Use the `open_file` package to open the file.
+                // The file manager may navigate to the file's location.
+                final result = await OpenFilex.open(
+                    "/storage/emulated/0/Android/data/com.example.pennyworth/files/downloads");
+
+                // Optionally handle the result.
+                print(result.message);
+              },
+              child: const Text('Open File Location'),
             ),
           ],
         ),
